@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
@@ -26,12 +26,13 @@ const ColorList = ({ colors, updateColors }) => {
     .put(`/colors/${colorToEdit.id}`, colorToEdit)
       .then(res => {
         console.log(res)
-        updateColors(
-          ...colors,
-          colorToEdit
-        )
-        setEditing(false)
+        const remainingColors = colors.filter(color => {
+          return color.id !== res.data.id
+        })
+        remainingColors.push(res.data)
+        updateColors(remainingColors)
       })
+        // res.data is a color object... 
       .catch(err => {
         console.log(err)
     })
